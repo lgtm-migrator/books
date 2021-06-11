@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: books-demo-data-mongo-load # the name of our job
+  labels:
+    job-group: data-load # logical grouping
+spec:
+  template:
+    metadata:
+      labels:
+        job-group: data-load # logical grouping
+    spec:
+      containers:
+        - name: books-demo-data-load-container
+          image: perl
+          command: ["perl" ,"-wle", "print 'hello from a Job'"]
+      restartPolicy: Never

@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-tier-mongo
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: data-tier-mongo
+  clusterIP: None
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-tier-mongo
+spec:
+  selector:
+    matchLabels:
+      app: data-tier-mongo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: data-tier-mongo
+        selector: data-tier-mongo
+    spec:
+      containers:
+        - name: books-data-mongodb-container
+          image: aidanwhiteley/books-db-mongodb:4.4.5-bionic
+          env:
+            - name: MONGO_INITDB_DATABASE
+              value: books
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: admin
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: password
+            - name: MONGO_INITDB_APP_USERNAME
+              value: appuser
+            - name: MONGO_INITDB_APP_PASSWORD
+              value: apppassword
+      #nodeSelector:
+        #kubernetes.io/hostname: mongodb-node
+---
